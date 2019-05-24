@@ -1,6 +1,3 @@
-''''
-Here is a Widget I wrote to a Swedish daytrader in <1h
-'''
 try:
     import Tkinter as tk
     import tkFont
@@ -41,7 +38,14 @@ stocks =	{
   "Victoria Park AB serie A" : "VICP-A.ST",
   "ÅF AB ser. B" : "AF-B.ST",
   "NIBE Industrier AB ser. B" : "NIBE-B.ST",
-  "Bure Equity AB" : "BURE.ST"
+  "Bure Equity AB" : "BURE.ST",
+  "Odd Molly International AB" : "ODD.ST",
+  "Gapwaves AB" : "GAPW-B.ST",
+  "Victoria Park AB serie B":"VICP-B.ST",
+  "Sagax AB D" : "SAGA-D.ST",
+  "Telefon AB L.M. Ericsson ADR" : "ERIC-B.ST",
+  "organoclick ab" : "ORGC.ST",
+  "Bravida Holding AB" : "BRAV.ST"
 }
 
 class MultiColumnListbox(object):
@@ -98,7 +102,7 @@ class MultiColumnListbox(object):
         if week.weekday() > 4:
             week = week - datetime.timedelta(days=1)
 
-        print(week)
+        #print(week)
         return week
 
 
@@ -128,24 +132,22 @@ class MultiColumnListbox(object):
                         try:
                             n = self.weekDate()
                             week = self.weekDate(7)
-                            month = self.weekDate(30)
+                            month = self.weekDate(25)
                             q = self.weekDate(120)
-                            #print(week.strftime('%Y-%m-%d'))
                             n = yf.download(stocks[tds[6].text], n.strftime('%Y-%m-%d'), n.strftime('%Y-%m-%d'))
                             week = yf.download(stocks[tds[6].text], week.strftime('%Y-%m-%d'), week.strftime('%Y-%m-%d'))
                             month = yf.download(stocks[tds[6].text], month.strftime('%Y-%m-%d'), month.strftime('%Y-%m-%d'))
                             q = yf.download(stocks[tds[6].text], q.strftime('%Y-%m-%d'), q.strftime('%Y-%m-%d'))
 
                             n = int(n['Close'].values[0])
+                            #n = 100-(n/n*100)
                             w = int(week['Close'].values[0])
-                            print((100-(n/w*100)),'%')
+                            w = round(100-(n/w*100),1)
                             m = int(month['Close'].values[0])
-                            print(m)
-                            print((100-(n/m*100)),'%')
+                            m = round(100-(n/m*100),1)
                             q = int(q['Close'].values[0])
-                            print(q)
-                            print((100-(n/q*100)),'%')
-
+                            q = round(100-(n/q*100),1)
+                            #print(q)
                             values= (tds[0].text, tds[5].text, tds[1].text, tds[8].text, 'Vol: ' + tds[9].text + ' Pris: '+ tds[11].text, "{0:n}".format(money), w, m, q, tds[3].text + ' (' + tds[2].text + ')', tds[13].text, tds[4].text, tds[7].text, tds[10].text, tds[12].text )
                             data.append(values)
                         except Exception as e:
@@ -162,7 +164,7 @@ class MultiColumnListbox(object):
                 self.msg['text'] = datetime.datetime.now()
 
                 url = "https://marknadssok.fi.se/publiceringsklient/sv-SE/Search/Search?SearchFunctionType=Insyn&Utgivare=&PersonILedandeSt%C3%A4llningNamn=&Transaktionsdatum.From=2019-01-01&Transaktionsdatum.To=&Publiceringsdatum.From=&Publiceringsdatum.To=&button=search&Page=" + str(i)  # change to whatever your url is
-                print(url)
+                #print(url)
                 response = requests.get(url)
                 soup = BeautifulSoup(response.text, features='html.parser')
                 i += 1
